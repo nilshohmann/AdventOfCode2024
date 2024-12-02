@@ -81,7 +81,7 @@ pub trait Riddle {
         path.push(name);
 
         let content: String = fs::read_to_string(path)
-            .expect("Could not read file");
+            .expect(&format!("Could not read file '{}'", name));
 
         content
     }
