@@ -8,14 +8,26 @@ const RIGHT: usize = 1;
 const DOWN: usize = 2;
 const LEFT: usize = 3;
 
+#[derive(PartialEq, Eq, Hash, Clone)]
+struct Point {
+    x: usize,
+    y: usize,
+}
+
+#[derive(PartialEq, Eq, Hash, Clone)]
+struct Position {
+    point: Point,
+    direction: usize,
+}
+
 impl Riddle for Day06 {
     fn day(&self) -> u8 { 6 }
 
     fn solve_first(&self) -> String {
         let map = self.read_map();
 
-        let (y, x) = self.find_guard(&map);
-        let visited = self.find_guard_movement(&map, y, x, UP);
+        let start = self.find_guard(&map);
+        let visited = self.find_guard_movement(&map, &start);
 
         visited.len().to_string()
     }
@@ -23,23 +35,23 @@ impl Riddle for Day06 {
     fn solve_second(&self) -> String {
         let mut map = self.read_map();
 
-        let (y, x) = self.find_guard(&map);
-        let visited = self.find_guard_movement(&map, y, x, UP);
+        let start = self.find_guard(&map);
+        let visited = self.find_guard_movement(&map, &start);
 
         let mut result = 0;
 
         // As we can only block the way the guard is moving, we only need to check this path
-        for (o_y, o_x) in visited {
-            if map[o_y][o_x] == '.' {
+        for obstacle in visited {
+            if map[obstacle.y][obstacle.x] == '.' {
                 // Insert a temporary obstacle
-                map[o_y][o_x] = '#';
+                map[obstacle.y][obstacle.x] = '#';
 
-                if self.is_looping(&map, y, x, 0) {
+                if self.is_looping(&map, &start) {
                     result += 1;
                 }
 
                 // Remove obstacle afterward
-                map[o_y][o_x] = '.';
+                map[obstacle.y][obstacle.x] = '.';
             }
         }
 
@@ -55,11 +67,11 @@ impl Day06 {
             .collect::<Vec<Vec<char>>>()
     }
 
-    fn find_guard(&self, map: &Vec<Vec<char>>) -> (usize, usize) {
+    fn find_guard(&self, map: &Vec<Vec<char>>) -> Position {
         for y in 0..map.len() {
             for x in 0..map[y].len() {
                 if map[y][x] == '^' {
-                    return (y, x);
+                    return Position { point: Point { x, y }, direction: UP };
                 }
             }
         }
@@ -67,62 +79,57 @@ impl Day06 {
         panic!("Couldn't find guard position!");
     }
 
-    fn find_guard_movement(&self, map: &Vec<Vec<char>>, y: usize, x: usize, d: usize) -> HashSet<(usize, usize)> {
-        let mut visited: HashSet<(usize, usize)> = HashSet::new();
-        visited.insert((y, x));
+    fn find_guard_movement(&self, map: &Vec<Vec<char>>, start: &Position) -> HashSet<Point> {
+        let mut visited: HashSet<Point> = HashSet::new();
 
-        let (mut x, mut y, mut d) = (x, y, d);
-        while self.move_guard(&map, &mut y, &mut x, &mut d) {
-            visited.insert((y, x));
+        let mut current = start.clone();
+        visited.insert(current.point.clone());
+
+        while self.move_guard(&map, &mut current) {
+            visited.insert(current.point.clone());
         }
 
         visited
     }
 
-    fn move_guard(&self, map: &Vec<Vec<char>>, y: &mut usize, x: &mut usize, d: &mut usize) -> bool {
-        let (mut next_y, mut next_x) = self.move_forward(*y, *x, *d);
-        if next_y >= map.len() || next_x >= map[next_y].len() {
+    fn move_guard(&self, map: &Vec<Vec<char>>, pos: &mut Position) -> bool {
+        let next = self.move_forward(pos);
+        if next.y >= map.len() || next.x >= map[next.y].len() {
+            // We left the map
             return false;
         }
 
-        if map[next_y][next_x] == '#' {
-            *d = (*d + 1) % 4;
-            (next_y, next_x) = self.move_forward(*y, *x, *d);
-            if next_y >= map.len() || next_x >= map[next_y].len() {
-                return false;
-            }
-
-            // We got stuck in a corner, go back 180°
-            if map[next_y][next_x] == '#' {
-                *d = (*d + 1) % 4;
-                return true;
-            }
+        if map[next.y][next.x] == '#' {
+            // Rotate 90° to the right
+            pos.direction = (pos.direction + 1) % 4;
+        } else {
+            // Move forward
+            pos.point = next;
         }
 
-        // Update current position
-        *y = next_y;
-        *x = next_x;
         true
     }
 
-    fn move_forward(&self, y: usize, x: usize, d: usize) -> (usize, usize) {
-        match d {
-            UP => (if y == 0 { 0xFFFF } else { y - 1 }, x),
-            RIGHT => (y, x + 1),
-            DOWN => (y + 1, x),
-            LEFT => (y, if x == 0 { 0xFFFF } else { x - 1 }),
-            _ => panic!("Invalid direction: {}!", d),
+    fn move_forward(&self, pos: &Position) -> Point {
+        let decrease = move |i: usize| if i == 0 { 0xFFFF } else { i - 1 };
+        let (x, y) = (pos.point.x, pos.point.y);
+
+        match pos.direction {
+            UP => Point { x, y: decrease(y) },
+            RIGHT => Point { x: x + 1, y },
+            DOWN => Point { x, y: y + 1 },
+            LEFT => Point { x: decrease(x), y },
+            _ => panic!("Invalid direction: {}!", pos.direction),
         }
     }
 
-    fn is_looping(&self, map: &Vec<Vec<char>>, y: usize, x: usize, d: usize) -> bool {
-        let (mut y, mut x, mut d) = (y, x, d);
+    fn is_looping(&self, map: &Vec<Vec<char>>, start: &Position) -> bool {
+        let mut visited: HashSet<Position> = HashSet::new();
+        visited.insert(start.clone());
 
-        let mut visited: HashSet<(usize, usize, usize)> = HashSet::new();
-        visited.insert((y, x, d));
-
-        while self.move_guard(&map, &mut y, &mut x, &mut d) {
-            if !visited.insert((y, x, d)) {
+        let mut current = start.clone();
+        while self.move_guard(&map, &mut current) {
+            if !visited.insert(current.clone()) {
                 return true;
             }
         }
