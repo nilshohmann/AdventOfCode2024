@@ -95,10 +95,12 @@ pub trait Riddle {
         path.push(format!("day{:0>2}", self.day()));
         path.push(name);
 
-        let content: String = fs::read_to_string(path)
-            .expect(&format!("Could not read file '{}'", name));
+        let content = fs::read_to_string(&path);
 
-        content
+        match content {
+            Ok(content) => content,
+            Err(err) => panic!("Could not read file {}: {}", path.to_str().unwrap(), err),
+        }
     }
 }
 

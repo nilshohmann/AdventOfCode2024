@@ -39,7 +39,7 @@ impl Day07 {
         let mut result = 0;
 
         for equation in equations.iter() {
-            if self.can_be_solved(equation, 2) {
+            if equation.can_be_solved(2) {
                 result += equation.result;
             }
         }
@@ -53,7 +53,7 @@ impl Day07 {
         let mut result = 0;
 
         for equation in equations.iter() {
-            if self.can_be_solved(equation, 3) {
+            if equation.can_be_solved(3) {
                 result += equation.result;
             }
         }
@@ -71,23 +71,25 @@ impl Day07 {
                 }
             }).collect::<Vec<Equation>>()
     }
+}
 
-    fn can_be_solved(&self, equation: &Equation, base: u8) -> bool {
-        let mut operations: Vec<u8> = vec![0; equation.values.len() - 1];
-        if self.can_be_solved_with(equation, &operations) {
+impl Equation {
+    fn can_be_solved(&self, base: u8) -> bool {
+        let mut operations: Vec<u8> = vec![0; self.values.len() - 1];
+        if self.can_be_solved_with(&operations) {
             return true;
         }
 
-        let count = (base as u64).pow(equation.values.len() as u32 - 1);
+        let count = (base as u64).pow(self.values.len() as u32 - 1);
         for _ in 0..count {
-            for i in 0..(equation.values.len() - 1) {
+            for i in 0..(self.values.len() - 1) {
                 operations[i] = (operations[i] + 1) % base;
                 if operations[i] != 0 {
                     break;
                 }
             }
 
-            if self.can_be_solved_with(equation, &operations) {
+            if self.can_be_solved_with(&operations) {
                 return true;
             }
         }
@@ -95,22 +97,34 @@ impl Day07 {
         false
     }
 
-    fn can_be_solved_with(&self, equation: &Equation, operations: &Vec<u8>) -> bool {
-        let mut result = equation.values[0];
+    fn can_be_solved_with(&self, operations: &Vec<u8>) -> bool {
+        let mut result = self.values[0];
 
-        for (i, value) in equation.values[1..].iter().enumerate() {
+        for (i, value) in self.values[1..].iter().enumerate() {
             match operations[i] {
                 ADD => result += value,
                 MULTIPLY => result *= value,
-                JOIN => result = (result.to_string() + value.to_string().as_str()).parse::<u64>().unwrap(),
+                JOIN => result = Self::join_values(result, *value),
                 _ => panic!("Unexpected operation: {}", operations[i]),
             }
 
-            if result > equation.result {
+            if result > self.result {
                 return false;
             }
         }
 
-        result == equation.result
+        result == self.result
+    }
+
+    fn join_values(left: u64, right: u64) -> u64 {
+        let mut result = left;
+        let mut number = right;
+
+        while number != 0 {
+            number /= 10;
+            result *= 10;
+        }
+
+        result + right
     }
 }
