@@ -1,12 +1,30 @@
-use crate::riddles::Riddle;
+use crate::riddles::{expect, Riddle};
 
 pub struct Day04();
 
 impl Riddle for Day04 {
     fn day(&self) -> u8 { 4 }
 
+    fn validate_first(&self) -> bool {
+        expect(self._solve_first("input_test.txt"), 18)
+    }
+
     fn solve_first(&self) -> String {
-        let board = self.read_board();
+        self._solve_first("input.txt").to_string()
+    }
+
+    fn validate_second(&self) -> bool {
+        expect(self._solve_second("input_test.txt"), 9)
+    }
+
+    fn solve_second(&self) -> String {
+        self._solve_second("input.txt").to_string()
+    }
+}
+
+impl Day04 {
+    fn _solve_first(&self, filename: &str) -> i32 {
+        let board = self.read_board(filename);
 
         let mut result: i32 = 0;
 
@@ -16,11 +34,11 @@ impl Riddle for Day04 {
             }
         }
 
-        result.to_string()
+        result
     }
 
-    fn solve_second(&self) -> String {
-        let board = self.read_board();
+    fn _solve_second(&self, filename: &str) -> i32 {
+        let board = self.read_board(filename);
 
         let mut result: i32 = 0;
 
@@ -30,13 +48,11 @@ impl Riddle for Day04 {
             }
         }
 
-        result.to_string()
+        result
     }
-}
 
-impl Day04 {
-    fn read_board(&self) -> Vec<Vec<char>> {
-        self.read_input_file("input.txt")
+    fn read_board(&self, filename: &str) -> Vec<Vec<char>> {
+        self.read_input_file(filename)
             .split("\n")
             .map(|s| s.chars().collect())
             .collect::<Vec<Vec<char>>>()
@@ -55,34 +71,34 @@ impl Day04 {
                 result += 1;
             }
 
-            if y >= 3 && self.is_mas(board[y-1][x-1], board[y-2][x-2], board[y-3][x-3]) {
+            if y >= 3 && self.is_mas(board[y - 1][x - 1], board[y - 2][x - 2], board[y - 3][x - 3]) {
                 result += 1;
             }
 
-            if y < board.len() - 3 && self.is_mas(board[y+1][x-1], board[y+2][x-2], board[y+3][x-3]) {
+            if y < board.len() - 3 && self.is_mas(board[y + 1][x - 1], board[y + 2][x - 2], board[y + 3][x - 3]) {
                 result += 1;
             }
         }
 
         if x < board[y].len() - 3 {
-            if self.is_mas(board[y][x+1], board[y][x+2], board[y][x+3]) {
+            if self.is_mas(board[y][x + 1], board[y][x + 2], board[y][x + 3]) {
                 result += 1;
             }
 
-            if y >= 3 && self.is_mas(board[y-1][x+1], board[y-2][x+2], board[y-3][x+3]) {
+            if y >= 3 && self.is_mas(board[y - 1][x + 1], board[y - 2][x + 2], board[y - 3][x + 3]) {
                 result += 1;
             }
 
-            if y < board.len() - 3 && self.is_mas(board[y+1][x+1], board[y+2][x+2], board[y+3][x+3]) {
+            if y < board.len() - 3 && self.is_mas(board[y + 1][x + 1], board[y + 2][x + 2], board[y + 3][x + 3]) {
                 result += 1;
             }
         }
 
-        if y >= 3 && self.is_mas(board[y-1][x], board[y-2][x], board[y-3][x]) {
+        if y >= 3 && self.is_mas(board[y - 1][x], board[y - 2][x], board[y - 3][x]) {
             result += 1;
         }
 
-        if y < board.len() - 3 && self.is_mas(board[y+1][x], board[y+2][x], board[y+3][x]) {
+        if y < board.len() - 3 && self.is_mas(board[y + 1][x], board[y + 2][x], board[y + 3][x]) {
             result += 1;
         }
 
@@ -95,13 +111,13 @@ impl Day04 {
 
     fn find_x_mas(&self, board: &Vec<Vec<char>>, y: usize, x: usize) -> i32 {
         let c = board[y][x];
-        if c != 'A' || y == 0 || y == board.len()-1 || x == 0 || x == board[y].len()-1 {
+        if c != 'A' || y == 0 || y == board.len() - 1 || x == 0 || x == board[y].len() - 1 {
             return 0;
         }
 
-        if self.is_ms(board[y-1][x-1], board[y+1][x+1]) &&
-            self.is_ms(board[y-1][x+1], board[y+1][x-1]) {
-            return 1
+        if self.is_ms(board[y - 1][x - 1], board[y + 1][x + 1]) &&
+            self.is_ms(board[y - 1][x + 1], board[y + 1][x - 1]) {
+            return 1;
         }
         0
     }

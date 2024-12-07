@@ -50,17 +50,31 @@ pub mod day25;
 pub use day25::Day25;
 
 use std::env;
+use std::fmt::Display;
 use std::fs;
 use std::time::{Duration, Instant};
 
 pub trait Riddle {
     fn day(&self) -> u8;
-    fn solve_first(&self) -> String;
-    fn solve_second(&self) -> String;
+
+    fn validate_first(&self) -> bool { false }
+    fn solve_first(&self) -> String { String::new() }
+
+    fn validate_second(&self) -> bool { false }
+    fn solve_second(&self) -> String { String::new() }
 
     fn execute(&self) -> String {
-        let (r1, d1) = measure_duration(|| self.solve_first());
-        let (r2, d2) = measure_duration(|| self.solve_second());
+        let (r1, d1) = if self.validate_first() {
+            measure_duration(|| self.solve_first())
+        } else {
+            ("Validation failed".to_string(), Duration::from_secs(0))
+        };
+
+        let (r2, d2) = if self.validate_second() {
+            measure_duration(|| self.solve_second())
+        } else {
+            ("Validation failed".to_string(), Duration::from_secs(0))
+        };
 
         let content = [
             "# Results",
@@ -72,6 +86,7 @@ pub trait Riddle {
 
         content.join("\n")
     }
+
     fn read_input_file(&self, name: &str) -> String {
         let mut path = env::current_dir()
             .expect("Could not get current directory");
@@ -87,7 +102,16 @@ pub trait Riddle {
     }
 }
 
-fn measure_duration<T>(f: impl Fn() -> T) -> (T, Duration) {
+pub fn expect<T: Eq + Display>(result: T, expected: T) -> bool {
+    if expected != result {
+        println!("Expected {}, got {}", expected, result);
+        return false;
+    }
+
+    true
+}
+
+fn measure_duration(f: impl Fn() -> String) -> (String, Duration) {
     let start = Instant::now();
     let result = f();
     let duration = start.elapsed();

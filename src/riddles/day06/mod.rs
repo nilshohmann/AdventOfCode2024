@@ -1,5 +1,5 @@
 use std::collections::HashSet;
-use crate::riddles::Riddle;
+use crate::riddles::{expect, Riddle};
 
 pub struct Day06();
 
@@ -23,17 +23,35 @@ struct Position {
 impl Riddle for Day06 {
     fn day(&self) -> u8 { 6 }
 
+    fn validate_first(&self) -> bool {
+        expect(self._solve_first("input_test.txt"), 41)
+    }
+
     fn solve_first(&self) -> String {
-        let map = self.read_map();
+        self._solve_first("input.txt").to_string()
+    }
+
+    fn validate_second(&self) -> bool {
+        expect(self._solve_second("input_test.txt"), 6)
+    }
+
+    fn solve_second(&self) -> String {
+        self._solve_second("input.txt").to_string()
+    }
+}
+
+impl Day06 {
+    fn _solve_first(&self, filename: &str) -> usize {
+        let map = self.read_map(filename);
 
         let start = self.find_guard(&map);
         let visited = self.find_guard_movement(&map, &start);
 
-        visited.len().to_string()
+        visited.len()
     }
 
-    fn solve_second(&self) -> String {
-        let mut map = self.read_map();
+    fn _solve_second(&self, filename: &str) -> i32 {
+        let mut map = self.read_map(filename);
 
         let start = self.find_guard(&map);
         let visited = self.find_guard_movement(&map, &start);
@@ -55,13 +73,11 @@ impl Riddle for Day06 {
             }
         }
 
-        result.to_string()
+        result
     }
-}
 
-impl Day06 {
-    fn read_map(&self) -> Vec<Vec<char>> {
-        self.read_input_file("input.txt")
+    fn read_map(&self, filename: &str) -> Vec<Vec<char>> {
+        self.read_input_file(filename)
             .split("\n")
             .map(|line| line.chars().collect())
             .collect::<Vec<Vec<char>>>()

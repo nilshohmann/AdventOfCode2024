@@ -1,12 +1,30 @@
-use crate::riddles::Riddle;
+use crate::riddles::{expect, Riddle};
 
 pub struct Day05();
 
 impl Riddle for Day05 {
     fn day(&self) -> u8 { 5 }
 
+    fn validate_first(&self) -> bool {
+        expect(self._solve_first("input_test.txt"), 143)
+    }
+
     fn solve_first(&self) -> String {
-        let (rules, updates) = self.read_rules_and_updates();
+        self._solve_first("input.txt").to_string()
+    }
+
+    fn validate_second(&self) -> bool {
+        expect(self._solve_second("input_test.txt"), 123)
+    }
+
+    fn solve_second(&self) -> String {
+        self._solve_second("input.txt").to_string()
+    }
+}
+
+impl Day05 {
+    fn _solve_first(&self, filename: &str) -> i32 {
+        let (rules, updates) = self.read_rules_and_updates(filename);
 
         // > 106
         let mut result = 0;
@@ -15,11 +33,12 @@ impl Riddle for Day05 {
                 result += update[update.len() / 2];
             }
         }
-        result.to_string()
+
+        result
     }
 
-    fn solve_second(&self) -> String {
-        let (rules, updates) = self.read_rules_and_updates();
+    fn _solve_second(&self, filename: &str) -> i32 {
+        let (rules, updates) = self.read_rules_and_updates(filename);
 
         // > 106
         let mut result = 0;
@@ -29,13 +48,12 @@ impl Riddle for Day05 {
                 result += update[update.len() / 2];
             }
         }
-        result.to_string()
-    }
-}
 
-impl Day05 {
-    fn read_rules_and_updates(&self) -> (Vec<(i32, i32)>, Vec<Vec<i32>>) {
-        let data = self.read_input_file("input.txt");
+        result
+    }
+
+    fn read_rules_and_updates(&self, filename: &str) -> (Vec<(i32, i32)>, Vec<Vec<i32>>) {
+        let data = self.read_input_file(filename);
         let (raw_rules, raw_updates) = data.split_once("\n\n").unwrap();
 
         let rules = raw_rules.split("\n")

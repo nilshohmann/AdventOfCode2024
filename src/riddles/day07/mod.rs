@@ -1,4 +1,4 @@
-use crate::riddles::Riddle;
+use crate::riddles::{expect, Riddle};
 
 #[derive(Debug)]
 struct Equation {
@@ -15,8 +15,26 @@ pub struct Day07();
 impl Riddle for Day07 {
     fn day(&self) -> u8 { 7 }
 
+    fn validate_first(&self) -> bool {
+        expect(self._solve_first("input_test.txt"), 3749)
+    }
+
     fn solve_first(&self) -> String {
-        let equations = self.read_equations();
+        self._solve_first("input.txt").to_string()
+    }
+
+    fn validate_second(&self) -> bool {
+        expect(self._solve_second("input_test.txt"), 11387)
+    }
+
+    fn solve_second(&self) -> String {
+        self._solve_second("input.txt").to_string()
+    }
+}
+
+impl Day07 {
+    fn _solve_first(&self, filename: &str) -> u64 {
+        let equations = self.read_equations(filename);
 
         let mut result = 0;
 
@@ -26,11 +44,11 @@ impl Riddle for Day07 {
             }
         }
 
-        result.to_string()
+        result
     }
 
-    fn solve_second(&self) -> String {
-        let equations = self.read_equations();
+    fn _solve_second(&self, filename: &str) -> u64 {
+        let equations = self.read_equations(filename);
 
         let mut result = 0;
 
@@ -40,13 +58,11 @@ impl Riddle for Day07 {
             }
         }
 
-        result.to_string()
+        result
     }
-}
 
-impl Day07 {
-    fn read_equations(&self) -> Vec<Equation> {
-        self.read_input_file("input.txt").split("\n")
+    fn read_equations(&self, filename: &str) -> Vec<Equation> {
+        self.read_input_file(filename).split("\n")
             .map(|s| {
                 let (left, right) = s.split_once(": ").unwrap();
                 Equation {
