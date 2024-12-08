@@ -76,13 +76,6 @@ impl Day06 {
         result
     }
 
-    fn read_map(&self, filename: &str) -> Vec<Vec<char>> {
-        self.read_input_file(filename)
-            .split("\n")
-            .map(|line| line.chars().collect())
-            .collect::<Vec<Vec<char>>>()
-    }
-
     fn find_guard(&self, map: &Vec<Vec<char>>) -> Position {
         for y in 0..map.len() {
             for x in 0..map[y].len() {

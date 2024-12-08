@@ -102,6 +102,13 @@ pub trait Riddle {
             Err(err) => panic!("Could not read file {}: {}", path.to_str().unwrap(), err),
         }
     }
+
+    fn read_map(&self, filename: &str) -> Vec<Vec<char>> {
+        self.read_input_file(filename)
+            .split("\n")
+            .map(|line| line.chars().collect())
+            .collect::<Vec<Vec<char>>>()
+    }
 }
 
 pub fn expect<T: Eq + Display>(result: T, expected: T) -> bool {
