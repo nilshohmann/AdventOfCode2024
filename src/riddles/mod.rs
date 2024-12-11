@@ -49,9 +49,12 @@ pub use day24::Day24;
 pub mod day25;
 pub use day25::Day25;
 
-use std::env;
-use std::fmt::Display;
-use std::fs;
+mod utils;
+pub use utils::*;
+mod extensions;
+pub use extensions::*;
+
+use std::{env, fs};
 use std::time::{Duration, Instant};
 
 pub trait Riddle {
@@ -109,15 +112,6 @@ pub trait Riddle {
             .map(|line| line.chars().collect())
             .collect::<Vec<Vec<char>>>()
     }
-}
-
-pub fn expect<T: Eq + Display>(result: T, expected: T) -> bool {
-    if expected != result {
-        println!("Expected {}, got {}", expected, result);
-        return false;
-    }
-
-    true
 }
 
 fn measure_duration(f: impl Fn() -> String) -> (String, Duration) {

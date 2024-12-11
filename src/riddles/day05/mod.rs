@@ -1,4 +1,4 @@
-use crate::riddles::{expect, Riddle};
+use crate::riddles::{ListParsing, Parsing, Riddle, Utils};
 
 pub struct Day05();
 
@@ -6,7 +6,7 @@ impl Riddle for Day05 {
     fn day(&self) -> u8 { 5 }
 
     fn validate_first(&self) -> bool {
-        expect(self._solve_first("input_test.txt"), 143)
+        Utils::verify(self._solve_first("input_test.txt"), 143)
     }
 
     fn solve_first(&self) -> String {
@@ -14,7 +14,7 @@ impl Riddle for Day05 {
     }
 
     fn validate_second(&self) -> bool {
-        expect(self._solve_second("input_test.txt"), 123)
+        Utils::verify(self._solve_second("input_test.txt"), 123)
     }
 
     fn solve_second(&self) -> String {
@@ -57,11 +57,11 @@ impl Day05 {
         let (raw_rules, raw_updates) = data.split_once("\n\n").unwrap();
 
         let rules = raw_rules.split("\n")
-            .map(|line| line.split_once("|").map(|(l, r)| (l.parse::<i32>().unwrap(), r.parse::<i32>().unwrap())).unwrap())
+            .map(|line| line.split_once("|").map(|(l, r)| (l.to::<i32>(), r.to::<i32>())).unwrap())
             .collect::<Vec<(i32, i32)>>();
 
         let updates = raw_updates.split("\n")
-            .map(|line| line.split(",").map(|e| e.parse::<i32>().unwrap()).collect::<Vec<i32>>())
+            .map(|line| line.split(",").parse_as::<i32>())
             .collect::<Vec<Vec<i32>>>();
 
         (rules, updates)

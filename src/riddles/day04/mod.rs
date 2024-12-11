@@ -1,4 +1,4 @@
-use crate::riddles::{expect, Riddle};
+use crate::riddles::{Riddle, Utils};
 
 pub struct Day04();
 
@@ -6,7 +6,7 @@ impl Riddle for Day04 {
     fn day(&self) -> u8 { 4 }
 
     fn validate_first(&self) -> bool {
-        expect(self._solve_first("input_test.txt"), 18)
+        Utils::verify(self._solve_first("input_test.txt"), 18)
     }
 
     fn solve_first(&self) -> String {
@@ -14,7 +14,7 @@ impl Riddle for Day04 {
     }
 
     fn validate_second(&self) -> bool {
-        expect(self._solve_second("input_test.txt"), 9)
+        Utils::verify(self._solve_second("input_test.txt"), 9)
     }
 
     fn solve_second(&self) -> String {
@@ -24,7 +24,7 @@ impl Riddle for Day04 {
 
 impl Day04 {
     fn _solve_first(&self, filename: &str) -> i32 {
-        let board = self.read_board(filename);
+        let board = self.read_map(filename);
 
         let mut result: i32 = 0;
 
@@ -38,7 +38,7 @@ impl Day04 {
     }
 
     fn _solve_second(&self, filename: &str) -> i32 {
-        let board = self.read_board(filename);
+        let board = self.read_map(filename);
 
         let mut result: i32 = 0;
 
@@ -49,13 +49,6 @@ impl Day04 {
         }
 
         result
-    }
-
-    fn read_board(&self, filename: &str) -> Vec<Vec<char>> {
-        self.read_input_file(filename)
-            .split("\n")
-            .map(|s| s.chars().collect())
-            .collect::<Vec<Vec<char>>>()
     }
 
     fn find_xmas(&self, board: &Vec<Vec<char>>, y: usize, x: usize) -> i32 {

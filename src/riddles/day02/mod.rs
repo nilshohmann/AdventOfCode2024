@@ -1,4 +1,4 @@
-use crate::riddles::{expect, Riddle};
+use crate::riddles::{ListParsing, Riddle, Utils};
 
 pub struct Day02();
 
@@ -6,7 +6,7 @@ impl Riddle for Day02 {
     fn day(&self) -> u8 { 2 }
 
     fn validate_first(&self) -> bool {
-        expect(self._solve_first("input_test.txt"), 2)
+        Utils::verify(self._solve_first("input_test.txt"), 2)
     }
 
     fn solve_first(&self) -> String {
@@ -14,7 +14,7 @@ impl Riddle for Day02 {
     }
 
     fn validate_second(&self) -> bool {
-        expect(self._solve_second("input_test.txt"), 4)
+        Utils::verify(self._solve_second("input_test.txt"), 4)
     }
 
     fn solve_second(&self) -> String {
@@ -38,7 +38,7 @@ impl Day02 {
     fn read_reports(&self, filename: &str) -> Vec<Vec<i32>> {
         self.read_input_file(filename)
             .split("\n")
-            .map(|line| line.split_whitespace().map(|e| e.parse::<i32>().unwrap()).collect::<Vec<i32>>())
+            .map(|line| line.split_whitespace().parse_as::<i32>())
             .collect()
     }
 

@@ -1,4 +1,4 @@
-use crate::riddles::{expect, Riddle};
+use crate::riddles::{Riddle, Utils};
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
 struct MemorySpace {
@@ -13,7 +13,7 @@ impl Riddle for Day09 {
     fn day(&self) -> u8 { 9 }
 
     fn validate_first(&self) -> bool {
-        expect(self._solve_first("input_test.txt"), 1928)
+        Utils::verify(self._solve_first("input_test.txt"), 1928)
     }
 
     fn solve_first(&self) -> String {
@@ -21,7 +21,7 @@ impl Riddle for Day09 {
     }
 
     fn validate_second(&self) -> bool {
-        expect(self._solve_second("input_test.txt"), 2858)
+        Utils::verify(self._solve_second("input_test.txt"), 2858)
     }
 
     fn solve_second(&self) -> String {

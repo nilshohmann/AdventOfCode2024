@@ -1,5 +1,5 @@
 use std::collections::HashSet;
-use crate::riddles::{expect, Riddle};
+use crate::riddles::{Riddle, Utils};
 
 pub struct Day06();
 
@@ -24,7 +24,7 @@ impl Riddle for Day06 {
     fn day(&self) -> u8 { 6 }
 
     fn validate_first(&self) -> bool {
-        expect(self._solve_first("input_test.txt"), 41)
+        Utils::verify(self._solve_first("input_test.txt"), 41)
     }
 
     fn solve_first(&self) -> String {
@@ -32,7 +32,7 @@ impl Riddle for Day06 {
     }
 
     fn validate_second(&self) -> bool {
-        expect(self._solve_second("input_test.txt"), 6)
+        Utils::verify(self._solve_second("input_test.txt"), 6)
     }
 
     fn solve_second(&self) -> String {

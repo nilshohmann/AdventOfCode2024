@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 use std::iter::zip;
-use crate::riddles::{expect, Riddle};
+use crate::riddles::{ListParsing, Riddle, Utils};
 
 pub struct Day01();
 
@@ -8,7 +8,7 @@ impl Riddle for Day01 {
     fn day(&self) -> u8 { 1 }
 
     fn validate_first(&self) -> bool {
-        expect(self._solve_first("input_test.txt"), 11)
+        Utils::verify(self._solve_first("input_test.txt"), 11)
     }
 
     fn solve_first(&self) -> String {
@@ -16,7 +16,7 @@ impl Riddle for Day01 {
     }
 
     fn validate_second(&self) -> bool {
-        expect(self._solve_second("input_test.txt"), 31)
+        Utils::verify(self._solve_second("input_test.txt"), 31)
     }
 
     fn solve_second(&self) -> String {
@@ -63,9 +63,7 @@ impl Day01 {
         let mut right_list: Vec<i32> = Vec::new();
 
         for line in self.read_input_file(filename).split("\n") {
-            let data = line.split_whitespace()
-                .map(|e| e.parse::<i32>().unwrap())
-                .collect::<Vec<i32>>();
+            let data = line.split_whitespace().parse_as::<i32>();
 
             left_list.push(data[0]);
             right_list.push(data[1]);

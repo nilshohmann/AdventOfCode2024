@@ -1,5 +1,5 @@
 use std::collections::{HashMap, HashSet};
-use crate::riddles::{expect, Riddle};
+use crate::riddles::{Riddle, Utils};
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
 struct Point {
@@ -13,7 +13,7 @@ impl Riddle for Day08 {
     fn day(&self) -> u8 { 8 }
 
     fn validate_first(&self) -> bool {
-        expect(self._solve_first("input_test.txt"), 14)
+        Utils::verify(self._solve_first("input_test.txt"), 14)
     }
 
     fn solve_first(&self) -> String {
@@ -21,7 +21,7 @@ impl Riddle for Day08 {
     }
 
     fn validate_second(&self) -> bool {
-        expect(self._solve_second("input_test.txt"), 34)
+        Utils::verify(self._solve_second("input_test.txt"), 34)
     }
 
     fn solve_second(&self) -> String {

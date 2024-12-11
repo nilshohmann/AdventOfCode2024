@@ -1,4 +1,4 @@
-use crate::riddles::{expect, Riddle};
+use crate::riddles::{ListParsing, Parsing, Riddle, Utils};
 
 #[derive(Debug)]
 struct Equation {
@@ -16,7 +16,7 @@ impl Riddle for Day07 {
     fn day(&self) -> u8 { 7 }
 
     fn validate_first(&self) -> bool {
-        expect(self._solve_first("input_test.txt"), 3749)
+        Utils::verify(self._solve_first("input_test.txt"), 3749)
     }
 
     fn solve_first(&self) -> String {
@@ -24,7 +24,7 @@ impl Riddle for Day07 {
     }
 
     fn validate_second(&self) -> bool {
-        expect(self._solve_second("input_test.txt"), 11387)
+        Utils::verify(self._solve_second("input_test.txt"), 11387)
     }
 
     fn solve_second(&self) -> String {
@@ -66,8 +66,8 @@ impl Day07 {
             .map(|s| {
                 let (left, right) = s.split_once(": ").unwrap();
                 Equation {
-                    result: left.parse::<u64>().unwrap(),
-                    values: right.split_whitespace().map(|s| s.parse::<u64>().unwrap()).collect(),
+                    result: left.to(),
+                    values: right.split_whitespace().parse_as(),
                 }
             }).collect::<Vec<Equation>>()
     }
