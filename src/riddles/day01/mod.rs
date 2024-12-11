@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 use std::iter::zip;
-use crate::riddles::{ListParsing, Riddle, Utils};
+use crate::riddles::{HashMapExt, ListParsing, Riddle, Utils};
 
 pub struct Day01();
 
@@ -41,11 +41,7 @@ impl Day01 {
 
         let mut mapping = HashMap::new();
         for right in right_list {
-            mapping.insert(right, if mapping.contains_key(&right) {
-                mapping[&right] + 1
-            } else {
-                1
-            });
+            mapping.add(1, right);
         }
 
         let mut result: i32 = 0;
