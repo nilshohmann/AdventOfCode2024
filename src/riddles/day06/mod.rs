@@ -1,5 +1,6 @@
 use std::collections::HashSet;
-use crate::riddles::{Riddle, Utils};
+use crate::riddles::Riddle;
+use crate::riddles::utils::{Point, Utils};
 
 pub struct Day06();
 
@@ -9,14 +10,8 @@ const DOWN: usize = 2;
 const LEFT: usize = 3;
 
 #[derive(PartialEq, Eq, Hash, Clone)]
-struct Point {
-    x: usize,
-    y: usize,
-}
-
-#[derive(PartialEq, Eq, Hash, Clone)]
 struct Position {
-    point: Point,
+    point: Point<usize>,
     direction: usize,
 }
 
@@ -88,8 +83,8 @@ impl Day06 {
         panic!("Couldn't find guard position!");
     }
 
-    fn find_guard_movement(&self, map: &Vec<Vec<char>>, start: &Position) -> HashSet<Point> {
-        let mut visited: HashSet<Point> = HashSet::new();
+    fn find_guard_movement(&self, map: &Vec<Vec<char>>, start: &Position) -> HashSet<Point<usize>> {
+        let mut visited: HashSet<Point<usize>> = HashSet::new();
 
         let mut current = start.clone();
         visited.insert(current.point.clone());
@@ -119,7 +114,7 @@ impl Day06 {
         true
     }
 
-    fn move_forward(&self, pos: &Position) -> Point {
+    fn move_forward(&self, pos: &Position) -> Point<usize> {
         let decrease = move |i: usize| if i == 0 { 0xFFFF } else { i - 1 };
         let (x, y) = (pos.point.x, pos.point.y);
 

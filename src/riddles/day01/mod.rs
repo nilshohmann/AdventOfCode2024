@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 use std::iter::zip;
-use crate::riddles::{HashMapExt, ListParsing, Riddle, Utils};
+use crate::riddles::Riddle;
+use crate::riddles::utils::{HashMapExt, ListParsing, Utils};
 
 pub struct Day01();
 

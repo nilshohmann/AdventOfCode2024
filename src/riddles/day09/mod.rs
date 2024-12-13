@@ -1,4 +1,5 @@
-use crate::riddles::{Riddle, Utils};
+use crate::riddles::Riddle;
+use crate::riddles::utils::Utils;
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
 struct MemorySpace {

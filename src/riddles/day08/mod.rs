@@ -1,11 +1,6 @@
 use std::collections::{HashMap, HashSet};
-use crate::riddles::{Riddle, Utils};
-
-#[derive(Debug, PartialEq, Eq, Hash, Clone)]
-struct Point {
-    x: i32,
-    y: i32,
-}
+use crate::riddles::Riddle;
+use crate::riddles::utils::{Point, Utils};
 
 pub struct Day08();
 
@@ -44,8 +39,8 @@ impl Day08 {
         self.count_antinodes(&map, &all_antennas, true)
     }
 
-    fn find_antennas(&self, map: &Vec<Vec<char>>) -> HashMap<char, Vec<Point>> {
-        let mut antennas: HashMap<char, Vec<Point>> = HashMap::new();
+    fn find_antennas(&self, map: &Vec<Vec<char>>) -> HashMap<char, Vec<Point<i32>>> {
+        let mut antennas: HashMap<char, Vec<Point<i32>>> = HashMap::new();
 
         for y in 0..map.len() {
             for x in 0..map[y].len() {
@@ -66,10 +61,10 @@ impl Day08 {
 
     fn count_antinodes(&self,
                        map: &Vec<Vec<char>>,
-                       all_antennas: &HashMap<char, Vec<Point>>,
+                       all_antennas: &HashMap<char, Vec<Point<i32>>>,
                        resonates: bool) -> usize {
-        let mut antinodes: HashSet<Point> = HashSet::new();
-        let mut add_antinode = |p: Point| -> bool {
+        let mut antinodes: HashSet<Point<i32>> = HashSet::new();
+        let mut add_antinode = |p: Point<i32>| -> bool {
             if p.x >= 0 && p.y >= 0 && p.x < map.len() as i32 && p.y < map[0].len() as i32 {
                 antinodes.insert(p);
                 return true;

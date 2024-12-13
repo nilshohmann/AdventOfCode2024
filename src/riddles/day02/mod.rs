@@ -1,4 +1,5 @@
-use crate::riddles::{ListParsing, Riddle, Utils};
+use crate::riddles::Riddle;
+use crate::riddles::utils::{ListParsing, Utils};
 
 pub struct Day02();
 

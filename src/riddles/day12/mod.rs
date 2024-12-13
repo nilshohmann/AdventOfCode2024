@@ -1,19 +1,14 @@
 use std::collections::HashSet;
-use crate::riddles::{Riddle, Utils};
+use crate::riddles::Riddle;
+use crate::riddles::utils::{Point, Utils};
 
-#[derive(Debug, PartialEq, Eq, Hash, Clone)]
-struct Point {
-    x: i32,
-    y: i32,
-}
+impl Point<i32> {
+    fn top(&self) -> Point<i32> { Point { x: self.x, y: self.y - 1 } }
+    fn right(&self) -> Point<i32> { Point { x: self.x + 1, y: self.y } }
+    fn bottom(&self) -> Point<i32> { Point { x: self.x, y: self.y + 1 } }
+    fn left(&self) -> Point<i32> { Point { x: self.x - 1, y: self.y } }
 
-impl Point {
-    fn top(&self) -> Point { Point { x: self.x, y: self.y - 1 } }
-    fn right(&self) -> Point { Point { x: self.x + 1, y: self.y } }
-    fn bottom(&self) -> Point { Point { x: self.x, y: self.y + 1 } }
-    fn left(&self) -> Point { Point { x: self.x - 1, y: self.y } }
-
-    fn around(&self) -> [Point; 4] {
+    fn around(&self) -> [Point<i32>; 4] {
         [
             self.top(),
             self.right(),
@@ -49,7 +44,7 @@ impl Day12 {
     fn _solve_first(&self, filename: &str) -> usize {
         let map = self.read_map(filename);
 
-        let mut visited: HashSet<Point> = HashSet::with_capacity(map.len() * map[0].len());
+        let mut visited: HashSet<Point<i32>> = HashSet::with_capacity(map.len() * map[0].len());
 
         let mut result = 0usize;
 
@@ -61,7 +56,7 @@ impl Day12 {
                 }
 
                 let id = Self::field_at(&start, &map);
-                let mut field: Vec<Point> = vec![start];
+                let mut field: Vec<Point<i32>> = vec![start];
 
                 let mut area = 0usize;
                 let mut perimeter = 0usize;
@@ -93,7 +88,7 @@ impl Day12 {
     fn _solve_second(&self, filename: &str) -> usize {
         let map = self.read_map(filename);
 
-        let mut visited: HashSet<Point> = HashSet::with_capacity(map.len() * map[0].len());
+        let mut visited: HashSet<Point<i32>> = HashSet::with_capacity(map.len() * map[0].len());
 
         let mut result = 0usize;
 
@@ -105,10 +100,10 @@ impl Day12 {
                 }
 
                 let id = Self::field_at(&start, &map);
-                let mut field: Vec<Point> = vec![start];
+                let mut field: Vec<Point<i32>> = vec![start];
 
                 let mut area = 0usize;
-                let mut fences: [Vec<Point>; 4] = [const { Vec::new() }; 4];
+                let mut fences: [Vec<Point<i32>>; 4] = [const { Vec::new() }; 4];
 
                 while let Some(p) = field.pop() {
                     if visited.contains(&p) {
@@ -136,11 +131,11 @@ impl Day12 {
         result
     }
 
-    fn find_sides(fences: &[Vec<Point>; 4]) -> usize {
+    fn find_sides(fences: &[Vec<Point<i32>>; 4]) -> usize {
         let mut result = 0usize;
 
         for i in 0..fences.len() {
-            let mut visited: HashSet<Point> = HashSet::with_capacity(fences[i].len());
+            let mut visited: HashSet<Point<i32>> = HashSet::with_capacity(fences[i].len());
 
             for p in fences[i].iter() {
                 if visited.contains(p) {
@@ -177,7 +172,7 @@ impl Day12 {
         result
     }
 
-    fn field_at(p: &Point, map: &Vec<Vec<char>>) -> char {
+    fn field_at(p: &Point<i32>, map: &Vec<Vec<char>>) -> char {
         if p.y < 0 || p.y >= map.len() as i32 || p.x < 0 || p.x >= map[0].len() as i32 {
             return '-';
         }

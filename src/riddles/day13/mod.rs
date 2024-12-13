@@ -1,15 +1,10 @@
-use crate::riddles::{Parsing, Riddle, Utils};
 use std::cmp::min;
-
-#[derive(Debug, PartialEq, Eq)]
-struct Point {
-    x: u64,
-    y: u64,
-}
+use crate::riddles::Riddle;
+use crate::riddles::utils::{Parsing, Point, Utils};
 
 #[derive(Debug)]
 struct Button {
-    diff: Point,
+    diff: Point<u64>,
     cost: u64,
 }
 
@@ -17,7 +12,7 @@ struct Button {
 struct Machine {
     a: Button,
     b: Button,
-    target: Point,
+    target: Point<u64>,
 }
 
 impl Machine {
@@ -50,7 +45,6 @@ impl Riddle for Day13 {
         Utils::verify(self._solve_second("input_test.txt"), 875318608908)
     }
 
-    // x < 83251772652063
     fn solve_second(&self) -> String {
         self._solve_second("input.txt").to_string()
     }
@@ -102,12 +96,12 @@ impl Day13 {
             // a * a.x + b * b.x = t.x
             // a * a.y + b * b.y = t.y
             // => b = (t.x / a.x - t.y / a.y) / (b.x / a.x - b.y / a.y)
-            let (a_x, a_y) = (machine.a.diff.x as f64, machine.a.diff.y as f64);
-            let (b_x, b_y) = (machine.b.diff.x as f64, machine.b.diff.y as f64);
-            let (t_x, t_y) = (machine.target.x as f64, machine.target.y as f64);
+            let ba = machine.a.diff.convert(|v| *v as f64);
+            let bb = machine.b.diff.convert(|v| *v as f64);
+            let t = machine.target.convert(|v| *v as f64);
 
-            let b = ((t_x / a_x - t_y / a_y) / (b_x / a_x - b_y / a_y) ).round() as u64;
-            let a = ((t_x - (b as f64) * b_x) / a_x).round() as u64;
+            let b = ((t.x / ba.x - t.y / ba.y) / (bb.x / ba.x - bb.y / ba.y)).round() as u64;
+            let a = ((t.x - (b as f64) * bb.x) / ba.x).round() as u64;
 
             if machine.verify(a, b) {
                 result += a * machine.a.cost + b * machine.b.cost;
@@ -117,7 +111,7 @@ impl Day13 {
         result
     }
 
-    fn read_machines(&self, filename: &str, offset: Point) -> Vec<Machine> {
+    fn read_machines(&self, filename: &str, offset: Point<u64>) -> Vec<Machine> {
         let mut result = Vec::new();
         let read_point = |data: &str, sep: char| {
             let (left, right) = data.split_once(", ").unwrap();

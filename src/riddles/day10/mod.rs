@@ -1,11 +1,6 @@
 use std::collections::HashSet;
-use crate::riddles::{Riddle, Utils};
-
-#[derive(Debug, PartialEq, Eq, Hash, Clone)]
-struct Point {
-    x: usize,
-    y: usize,
-}
+use crate::riddles::Riddle;
+use crate::riddles::utils::{Point, Utils};
 
 pub struct Day10();
 
@@ -56,8 +51,8 @@ impl Day10 {
         result
     }
 
-    fn find_starting_points(map: &Vec<Vec<char>>, value: char) -> Vec<Point> {
-        let mut points: Vec<Point> = Vec::new();
+    fn find_starting_points(map: &Vec<Vec<char>>, value: char) -> Vec<Point<usize>> {
+        let mut points: Vec<Point<usize>> = Vec::new();
 
         for y in 0..map.len() {
             for x in 0..map[y].len() {
@@ -70,9 +65,9 @@ impl Day10 {
         points
     }
 
-    fn find_trail_score(map: &Vec<Vec<char>>, start: &Point) -> usize {
-        let mut next_points: Vec<Point> = vec![start.clone()];
-        let mut visited: HashSet<Point> = HashSet::new();
+    fn find_trail_score(map: &Vec<Vec<char>>, start: &Point<usize>) -> usize {
+        let mut next_points: Vec<Point<usize>> = vec![start.clone()];
+        let mut visited: HashSet<Point<usize>> = HashSet::new();
 
         let mut result = 0;
         while let Some(p) = next_points.pop() {
@@ -105,7 +100,7 @@ impl Day10 {
         result
     }
 
-    fn find_trail_rating(map: &Vec<Vec<char>>, p: &Point) -> usize {
+    fn find_trail_rating(map: &Vec<Vec<char>>, p: &Point<usize>) -> usize {
         let value = map[p.y][p.x];
         if value == '0' {
             return 1;

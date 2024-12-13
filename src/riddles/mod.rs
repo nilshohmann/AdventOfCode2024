@@ -49,10 +49,7 @@ pub use day24::Day24;
 pub mod day25;
 pub use day25::Day25;
 
-mod utils;
-pub use utils::*;
-mod extensions;
-pub use extensions::*;
+pub mod utils;
 
 use std::{env, fs};
 use std::time::{Duration, Instant};

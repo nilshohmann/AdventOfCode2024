@@ -1,5 +1,11 @@
 use std::fmt::Display;
 
+mod extensions;
+mod point;
+
+pub use extensions::*;
+pub use point::*;
+
 pub struct Utils {}
 
 impl Utils {

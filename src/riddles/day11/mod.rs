@@ -1,5 +1,6 @@
 use std::collections::HashMap;
-use crate::riddles::{HashMapExt, Parsing, Riddle, Utils};
+use crate::riddles::Riddle;
+use crate::riddles::utils::{HashMapExt, Parsing, Utils};
 
 pub struct Day11();
 
