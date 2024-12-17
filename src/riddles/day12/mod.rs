@@ -1,6 +1,6 @@
-use std::collections::HashSet;
-use crate::riddles::Riddle;
 use crate::riddles::utils::{Point, Utils};
+use crate::riddles::Riddle;
+use std::collections::HashSet;
 
 impl Point<i32> {
     fn top(&self) -> Point<i32> { Point { x: self.x, y: self.y - 1 } }
@@ -9,19 +9,16 @@ impl Point<i32> {
     fn left(&self) -> Point<i32> { Point { x: self.x - 1, y: self.y } }
 
     fn around(&self) -> [Point<i32>; 4] {
-        [
-            self.top(),
-            self.right(),
-            self.bottom(),
-            self.left(),
-        ]
+        [self.top(), self.right(), self.bottom(), self.left()]
     }
 }
 
 pub struct Day12();
 
 impl Riddle for Day12 {
-    fn day(&self) -> u8 { 12 }
+    fn day(&self) -> u8 {
+        12
+    }
 
     fn validate_first(&self) -> bool {
         Utils::verify(self._solve_first("input_test.txt"), 1930)
@@ -50,7 +47,10 @@ impl Day12 {
 
         for y in 0..map.len() {
             for x in 0..map[y].len() {
-                let start = Point { x: x as i32, y: y as i32 };
+                let start = Point {
+                    x: x as i32,
+                    y: y as i32,
+                };
                 if visited.contains(&start) {
                     continue;
                 }
@@ -94,7 +94,10 @@ impl Day12 {
 
         for y in 0..map.len() {
             for x in 0..map[y].len() {
-                let start = Point { x: x as i32, y: y as i32 };
+                let start = Point {
+                    x: x as i32,
+                    y: y as i32,
+                };
                 if visited.contains(&start) {
                     continue;
                 }
@@ -145,7 +148,8 @@ impl Day12 {
                 visited.insert(p.clone());
                 result += 1;
 
-                if i & 1 == 1 { // fences left and right -> look vertical
+                if i & 1 == 1 {
+                    // fences left and right -> look vertical
                     let mut togo = vec![p.top(), p.bottom()];
 
                     while let Some(p) = togo.pop() {
@@ -155,7 +159,8 @@ impl Day12 {
                             togo.push(p.bottom());
                         }
                     }
-                } else { // fences top and bottom -> look horizontal
+                } else {
+                    // fences top and bottom -> look horizontal
                     let mut togo = vec![p.left(), p.right()];
 
                     while let Some(p) = togo.pop() {
