@@ -19,8 +19,7 @@ impl Riddle for Day16 {
     }
 
     fn validate_second(&self) -> bool {
-        // Utils::verify(self._solve_second("input_test.txt"), 45)
-        true
+        Utils::verify(self._solve_second("input_test.txt"), 45)
     }
 
     fn solve_second(&self) -> String {
